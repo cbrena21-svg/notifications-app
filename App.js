@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -73,11 +73,25 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
+//Marcar como leido
+const handlePress = (id) => {
+    setNotifications(currentNotifications => 
+      currentNotifications.map(item => {
+        if (item.id === id && !item.seen) {
+          // Si la tocamos y no estaba vista, bajamos el contador
+          setContador(prev => (prev > 0 ? prev - 1 : 0));
+          return { ...item, seen: true };
+        }
+        return item;
+      })
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.barraSuperior}>
         <View style={styles.noti}>
-          <Text style={styles.notiText}>{contador}</Text>
+          {contador > 0 && <Text style={styles.notiText}>{contador}</Text>}
           <Ionicons name="notifications" size={24} color="black" />
         </View>
         <Text style={styles.title}>BLOOM</Text>
@@ -89,17 +103,14 @@ export default function App() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
-          <View style={styles.notification}>
-            <Image
-              source={item.image}
-              style={styles.userImage}
-            />
+          <TouchableOpacity activeOpacity={0.7} onPress={() => handlePress(item.id)} style={[styles.notification, item.seen ? styles.readBackgroundColor : styles.unreadBackground]}>
+            <Image source={item.image} style={styles.userImage} />
             <View style={styles.notificationText}>
               <Text style={styles.username}>{item.username}</Text>
               <Text style={styles.message}>{item.message}</Text>
             </View>
-            <Text style={styles.message}>{item.seen}</Text>
-          </View>
+            {!item.seen && <View style={styles.unreadDot} />}
+          </TouchableOpacity>
         )}
       />
     </SafeAreaView>
@@ -109,48 +120,68 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#c5c5c5',
+    backgroundColor: '#8d8d8d',
   },
   barraSuperior: {
     width: '90%',
     padding: 20,
-    marginTop: 20,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-    alignItems: 'center',
+    marginTop: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     alignSelf: 'center',
+
   },
   noti: {
     alignItems: 'center',
+    justifyContent: 'center',
   },
+  //arregle para que se viera en la esquinita de la campana
   notiText: {
     color: 'white',
     fontSize: 9,
-    textAlignVertical: 'center',
-    textAlign: 'center',
     backgroundColor: 'red',
     borderRadius: 40,
     width: 20,
     height: 20,
+    textAlign: 'center',
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    zIndex: 1,
+    lineHeight: 18,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    letterSpacing: 2,
   },
   listContent: {
-    alignItems: 'center',
+    paddingHorizontal: '5%',
     paddingBottom: 20,
   },
   notification: {
-    width: '90%',
+    width: '100%',
     padding: 15,
-    marginTop: 15,
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
+    marginTop: 12,
+    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  unreadBackground: {
+    backgroundColor: '#f0f0f0',
+  },
+  readBackgroundColor: {
+    backgroundColor: '#c2c2c2',
+  },
+  unreadDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#007AFF',
+    marginLeft: 10,
   },
   userImage: {
     width: 50,
@@ -163,9 +194,10 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 15,
   },
   message: {
-    color: '#555',
+    color: '#666',
+    fontSize: 13,
   },
 });
