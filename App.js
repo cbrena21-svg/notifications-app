@@ -68,7 +68,7 @@ export default function App() {
       setContador(record => record + 1);
       const random = Math.floor(Math.random() * 18);
       setNotifications(record => [...record, { id: ((record.length + 1).toString()), message: (messages[Math.floor(Math.random() * 13)]), username: (users[random]), image: (images[random]), seen: false }]);
-    }, 10000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
