@@ -3,7 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   const [contador, setContador] = useState(0);
+  const notifications = [
 
+  ];
   useEffect(() => {
     const interval = setInterval(() => {
       setContador(contador + 1);
