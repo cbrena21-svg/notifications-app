@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "notifications-app",
-=======
-  "name": "examen2",
->>>>>>> cd1a9369165564f16a2f41430e62d8762d67abf2
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -13,14 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
-<<<<<<< HEAD
     "expo": "~54.0.33",
-=======
-    "expo": "^54.0.0",
->>>>>>> cd1a9369165564f16a2f41430e62d8762d67abf2
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
-    "react-native": "0.81.5"
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "~5.6.0"
   },
   "private": true
 }
