@@ -1,20 +1,12 @@
 {
   "expo": {
-<<<<<<< HEAD
     "name": "notifications-app",
     "slug": "notifications-app",
-=======
-    "name": "Examen2",
-    "slug": "Examen2",
->>>>>>> cd1a9369165564f16a2f41430e62d8762d67abf2
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-<<<<<<< HEAD
     "newArchEnabled": true,
-=======
->>>>>>> cd1a9369165564f16a2f41430e62d8762d67abf2
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -25,18 +17,10 @@
     },
     "android": {
       "adaptiveIcon": {
-<<<<<<< HEAD
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
-=======
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
->>>>>>> cd1a9369165564f16a2f41430e62d8762d67abf2
     },
     "web": {
       "favicon": "./assets/favicon.png"
