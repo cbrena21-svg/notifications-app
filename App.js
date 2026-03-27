@@ -63,19 +63,31 @@ export default function App() {
   const [contador, setContador] = useState(0);
   const [notifications, setNotifications] = useState([]);
 
+
+  // notificaciones automáticas y contador
   useEffect(() => {
     const interval = setInterval(() => {
-      setContador(record => record + 1);
+      setContador(contador => contador + 1);
       const random = Math.floor(Math.random() * 18);
-      setNotifications(record => [...record, { id: ((record.length + 1).toString()), message: (messages[Math.floor(Math.random() * 13)]), username: (users[random]), image: (images[random]), seen: false }]);
+      setNotifications(notifications => [...notifications, { id: ((notifications.length + 1).toString()), message: (messages[Math.floor(Math.random() * 13)]), username: (users[random]), image: (images[random]), seen: false }]);
     }, 5000);
 
     return () => clearInterval(interval);
   }, []);
 
-//Marcar como leido
-const handlePress = (id) => {
-    setNotifications(currentNotifications => 
+  //marcar todas como leidas
+  const handleAllSeen = () => {
+    if (contador > 0) {
+      setNotifications(notifications =>
+        notifications.map(notification => ({ ...notification, seen: true }))
+      );
+      setContador(0);
+    }
+  };
+
+  //Marcar como leido
+  const handlePress = (id) => {
+    setNotifications(currentNotifications =>
       currentNotifications.map(item => {
         if (item.id === id && !item.seen) {
           // Si la tocamos y no estaba vista, bajamos el contador
@@ -95,7 +107,9 @@ const handlePress = (id) => {
           <Ionicons name="notifications" size={24} color="black" />
         </View>
         <Text style={styles.title}>BLOOM</Text>
-        <AntDesign name="check" size={24} color="black" />
+        <TouchableOpacity onPress={handleAllSeen}>
+          <AntDesign name="check" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
       <FlatList
