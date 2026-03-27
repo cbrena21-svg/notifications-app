@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -62,14 +62,44 @@ const users = [
 export default function App() {
   const [contador, setContador] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const [currentNoti, setCurrentNoti] = useState(null);
 
+  const anim = useRef(new Animated.Value(-150)).current;
+
+  const mostrarBanner = () => {
+    Animated.spring(anim, {
+      toValue: 20,
+      useNativeDriver: true,
+      bounciness: 10,
+    }).start();
+
+    setTimeout(() => {
+      Animated.spring(anim, {
+        toValue: -150,
+        useNativeDriver: true,
+      }).start();
+    }, 3000);
+  };
 
   // notificaciones automáticas y contador
   useEffect(() => {
     const interval = setInterval(() => {
-      setContador(contador => contador + 1);
       const random = Math.floor(Math.random() * 18);
-      setNotifications(notifications => [...notifications, { id: ((notifications.length + 1).toString()), message: (messages[Math.floor(Math.random() * 13)]), username: (users[random]), image: (images[random]), seen: false }]);
+
+      setContador(contador => contador + 1);
+      setNotifications(notifications => {
+        const newNoti = {
+          id: (notifications.length + 1).toString(),
+          message: messages[Math.floor(Math.random() * 13)],
+          username: users[random],
+          image: images[random],
+          seen: false
+        };
+        setCurrentNoti(newNoti);
+        return [newNoti, ...notifications];
+      });
+
+      mostrarBanner();
     }, 5000);
 
     return () => clearInterval(interval);
@@ -90,7 +120,6 @@ export default function App() {
     setNotifications(currentNotifications =>
       currentNotifications.map(item => {
         if (item.id === id && !item.seen) {
-          // Si la tocamos y no estaba vista, bajamos el contador
           setContador(prev => (prev > 0 ? prev - 1 : 0));
           return { ...item, seen: true };
         }
@@ -101,6 +130,15 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {currentNoti && (
+        <Animated.View style={[styles.banner, { transform: [{ translateY: anim }] }]}>
+          <Image source={currentNoti.image} style={styles.userImage} />
+          <View style={styles.notificationText}>
+            <Text style={styles.username}>{currentNoti.username}</Text>
+            <Text style={styles.message} numberOfLines={1}>{currentNoti.message}</Text>
+          </View>
+        </Animated.View>
+      )}
       <View style={styles.barraSuperior}>
         <View style={styles.noti}>
           {contador > 0 && <Text style={styles.notiText}>{contador}</Text>}
@@ -136,6 +174,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#8d8d8d',
   },
+  banner: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    right: 20,
+    height: 80,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
+    zIndex: 100,
+  },
   barraSuperior: {
     width: '90%',
     padding: 20,
@@ -152,7 +208,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  //arregle para que se viera en la esquinita de la campana
   notiText: {
     color: 'white',
     fontSize: 9,
